@@ -1,8 +1,13 @@
+import 'package:bytebank/database/app_database.dart';
+import 'package:bytebank/models/contact.dart';
 import 'package:bytebank/screens/dashboard.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());
+  findAll().then((contacts) {
+    debugPrint(contacts.toString());
+  });
 }
 
 class MyApp extends StatelessWidget {
