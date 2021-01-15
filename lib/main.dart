@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());
+  save(Contact(2,'Julia',1000));
   findAll().then((contacts) {
     debugPrint(contacts.toString());
   });
