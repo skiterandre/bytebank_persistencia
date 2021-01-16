@@ -1,41 +1,72 @@
+import 'package:bytebank/database/app_database.dart';
 import 'package:bytebank/models/contact.dart';
 import 'package:bytebank/screens/contact_form.dart';
 import 'package:flutter/material.dart';
 
-class ContactsList extends StatelessWidget {
+class ContactsList extends StatefulWidget {
 
-  final List<Contact> contacts = List()
+  @override
+  State<StatefulWidget> createState() => _ContactList();
+}
 
+class _ContactList extends State<ContactsList>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Contacts'),
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index){
-            final Contact contact = contacts[index];
-            return _ContactItem(contact);
+      body: FutureBuilder<List<Contact>>(
+        initialData: List(),
+        future:  findAll(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              break;
+            case ConnectionState.waiting:
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [CircularProgressIndicator(), Text("Loading")],
+                ),
+              );
+              break;
+            case ConnectionState.active:
+              break;
+            case ConnectionState.done:
+              final List<Contact> contacts = snapshot.data;
+              return ListView.builder(
+                itemBuilder: (context, index) {
+                  final Contact contact = contacts[index];
+                  return _ContactItem(contact);
+                },
+                itemCount: contacts.length,
+              );
+              break;
+          }
+          return Text("Unknow Error");
         },
-        itemCount: contacts.length,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ContactForm(),
-          )).then((newContact) => debugPrint(newContact.toString()))
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ContactForm(),
+            ),
+          ).then((value) => {setState((){})}),
         },
         child: Icon(Icons.add),
       ),
     );
   }
+
 }
 
-class _ContactItem extends StatelessWidget{
-
+class _ContactItem extends StatelessWidget {
   final Contact contact;
 
-  const _ContactItem( this.contact);
+  const _ContactItem(this.contact);
 
   @override
   Widget build(BuildContext context) {
@@ -53,5 +84,4 @@ class _ContactItem extends StatelessWidget{
       ),
     );
   }
-
 }

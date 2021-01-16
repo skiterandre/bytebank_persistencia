@@ -8,7 +8,6 @@ class Contact{
 
   Map<String, dynamic> toMap(){
     return {
-      'id': id,
       'name': name,
       'account_number': accountNumber
     };
